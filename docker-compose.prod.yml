@@ -1,0 +1,53 @@
+version: "3.8"
+
+services:
+  db: # db is host for connecting to database
+    image: postgres:15
+    container_name: ${DOCKER_PREFIX}_postgresql
+    restart: always
+    environment:
+    - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    - POSTGRES_USER=${POSTGRES_USER}
+    - POSTGRES_DB=${POSTGRES_DB_NAME}
+    volumes:
+    - ./server/pgdata:/var/lib/postgresql/data 
+    ports:
+    - '5432:5432' # exposed port : port inside container
+
+  pgadmin:
+    image: dpage/pgadmin4:6.10
+    container_name: ${DOCKER_PREFIX}_pgadmin4
+    depends_on:
+      - db
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - '5050:80'
+
+  web:
+    build:
+      context: ./server
+    container_name: ${DOCKER_PREFIX}_node
+    env_file:
+      - .env
+    restart: always
+    depends_on:
+      - db 
+    ports: 
+      - '${DOCKER_NODE_PORT}:4000' # exposed port : port inside container
+    volumes:
+      - /usr/app/server/node_modules # ? make sure we don't delete node_modules because of other volume
+      - ./server:/usr/app/server
+
+  frontend:
+    build:
+      context: ./front-end
+      dockerfile: Dockerfile
+    container_name: ${DOCKER_PREFIX}_react
+    stdin_open: true # needed because of react-scripts opens the browser
+    ports:
+      - "${DOCKER_REACT_PORT}:3000"
+    volumes:
+      - /usr/app/front-end/node_modules
+      - ./front-end:/usr/app/front-end
