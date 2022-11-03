@@ -35,3 +35,4 @@ server/.tools/db/import.sh
 
 echo "${BOLD}${RED}--------------------------------------------------------------------------------${RESET}"
 echo "${YELLOW}The panel is available at: ${BOLD}${GREEN}http://localhost:${DOCKER_REACT_PORT%$'\r'}/${RESET}"
+echo "${YELLOW}The database panel is available at: ${BOLD}${GREEN}http://localhost:5050/${RESET}"
