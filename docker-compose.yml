@@ -19,6 +19,8 @@ services:
     container_name: ${DOCKER_PREFIX}_pgadmin4
     depends_on:
       - db
+    links:
+      - db # allows to connect to db in pgadmin with host 'db' instead of IP address
     environment:
       - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL}
       - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}

@@ -8,8 +8,7 @@
     "build": "tsc",
     "dev": "ts-node-dev --poll --respawn --transpile-only src/index.ts",
     "format": "prettier --write src/",
-    "lint": "eslint src/",
-    "pre-commit": "echo precommit"
+    "lint": "eslint src/"
   },
   "keywords": [],
   "author": "Konrad Perlicki <konrad.perlicki01@gmail.com>",
