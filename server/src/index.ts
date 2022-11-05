@@ -5,7 +5,8 @@ import dotenv from "dotenv";
 dotenv.config({ path: "./../.env" });
 import User from "./entity/User";
 import AppDataSource from "./data-source";
-import redis from "./redis";
+import sessionConfig from "./session";
+import session from "express-session";
 
 class App {
   private app = express();
@@ -17,6 +18,8 @@ class App {
 
   private initMiddlewares(): void {
     this.app.use(cors());
+    this.app.use(express.urlencoded({ extended: true }));
+    this.app.use(session(sessionConfig));
   }
 
   private async connectDB(): Promise<void> {
@@ -63,15 +66,9 @@ class App {
       ]);
     });
 
-    await this.startRedis();
-
     this.app.listen(process.env.DOCKER_NODE_PORT, async () => {
       console.log("listening for requests on port " + process.env.DOCKER_NODE_PORT);
     });
-  }
-
-  private async startRedis(): Promise<void> {
-    await redis.connect();
   }
 }
 /* Test */
