@@ -4,8 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 dotenv.config({ path: "./../.env" });
 import User from "./entity/User";
-import { createConnection } from "typeorm";
-import ormconfig from "./ormconfig";
+import AppDataSource from "./data-source";
 
 const app = express();
 
@@ -38,7 +37,7 @@ app.listen(process.env.DOCKER_NODE_PORT, async () => {
   let retries = 5;
   while (retries) {
     try {
-      await createConnection(ormconfig);
+      AppDataSource.initialize();
       break;
     } catch (err) {
       retries -= 1;
