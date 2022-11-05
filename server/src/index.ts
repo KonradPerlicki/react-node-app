@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 dotenv.config({ path: "./../.env" });
 import User from "./entity/User";
 import AppDataSource from "./data-source";
+import redis from "./redis";
 
 const app = express();
 
@@ -34,6 +35,8 @@ app.get("/", async (req: Request, res: Response) => {
 });
 
 app.listen(process.env.DOCKER_NODE_PORT, async () => {
+  await redis.connect();
+
   let retries = 5;
   while (retries) {
     try {

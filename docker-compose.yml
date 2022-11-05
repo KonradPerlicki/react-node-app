@@ -40,8 +40,8 @@ services:
     ports: 
       - '${DOCKER_NODE_PORT}:4000' # exposed port : port inside container
     volumes:
-      - /usr/app/server/node_modules # ? make sure we don't delete node_modules because of other volume
       - ./server:/usr/app/server
+      - /usr/app/server/node_modules # ? make sure we don't delete node_modules because of other volume
 
   frontend:
     build:
@@ -54,3 +54,9 @@ services:
     volumes:
       - /usr/app/front-end/node_modules
       - ./front-end:/usr/app/front-end
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - 6379:6379
+    container_name: ${DOCKER_PREFIX}_redis
