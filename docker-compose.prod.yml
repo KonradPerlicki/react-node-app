@@ -51,3 +51,9 @@ services:
     volumes:
       - /usr/app/front-end/node_modules
       - ./front-end:/usr/app/front-end
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - 6379:6379
+    container_name: ${DOCKER_PREFIX}_redis
