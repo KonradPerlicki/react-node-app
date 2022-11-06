@@ -7,6 +7,8 @@ import User from "./entity/User";
 import AppDataSource from "./data-source";
 import sessionConfig from "./session";
 import session from "express-session";
+import logger from "./utils/logger";
+import morgan from "morgan";
 
 class App {
   private app = express();
@@ -20,6 +22,8 @@ class App {
     this.app.use(cors());
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(session(sessionConfig));
+    this.app.use(express.json());
+    this.app.use(morgan("dev"));
   }
 
   private async connectDB(): Promise<void> {
@@ -33,8 +37,8 @@ class App {
         break;
       } catch (err) {
         retries -= 1;
-        console.log(err);
-        console.log(`retries left: ${retries}`);
+        logger.error(err);
+        logger.info(`retries left: ${retries}`);
 
         //Wait 5 seconds
         await new Promise((res) => setTimeout(res, 5000));
@@ -67,7 +71,7 @@ class App {
     });
 
     this.app.listen(process.env.DOCKER_NODE_PORT, async () => {
-      console.log("listening for requests on port " + process.env.DOCKER_NODE_PORT);
+      logger.info("listening for requests on port " + process.env.DOCKER_NODE_PORT);
     });
   }
 }

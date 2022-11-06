@@ -36,12 +36,14 @@ services:
       - .env
     restart: always
     depends_on:
+      - redis
       - db 
     ports: 
       - '${DOCKER_NODE_PORT}:4000' # exposed port : port inside container
     volumes:
       - ./server:/usr/app/server
-      - /usr/app/server/node_modules # ? make sure we don't delete node_modules because of other volume
+      #- /usr/app/server/node_modules # ? make sure we don't delete node_modules because of other volume
+
 
   frontend:
     build:
@@ -52,8 +54,8 @@ services:
     ports:
       - "${DOCKER_REACT_PORT}:3000"
     volumes:
-      - /usr/app/front-end/node_modules
       - ./front-end:/usr/app/front-end
+      #- /usr/app/front-end/node_modules
 
   redis:
     image: redis:7-alpine
