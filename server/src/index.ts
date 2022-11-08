@@ -9,13 +9,23 @@ import sessionConfig from "./session";
 import session from "express-session";
 import logger from "./utils/logger";
 import morgan from "morgan";
+import { ApolloServer } from "apollo-server-express";
+import {
+  ApolloServerPluginLandingPageGraphQLPlayground,
+  ApolloServerPluginLandingPageProductionDefault,
+} from "apollo-server-core";
+import { buildSchema } from "type-graphql";
 
 class App {
   private app = express();
+  private server: ApolloServer;
+  private graphqlResolversPath = __dirname + "/graphql/resolvers/**/*.ts";
 
   constructor() {
     this.initMiddlewares();
+    this.initApolloServer();
     this.connectDB();
+    this.startServer();
   }
 
   private initMiddlewares(): void {
@@ -30,9 +40,7 @@ class App {
     let retries = 5;
     while (retries) {
       try {
-        AppDataSource.initialize();
-
-        await this.startServer();
+        if (!AppDataSource.isInitialized) AppDataSource.initialize();
 
         break;
       } catch (err) {
@@ -40,10 +48,30 @@ class App {
         logger.error(err);
         logger.info(`retries left: ${retries}`);
 
-        //Wait 5 seconds
-        await new Promise((res) => setTimeout(res, 5000));
+        //Wait 1 second
+        await new Promise((res) => setTimeout(res, 1000));
       }
     }
+  }
+
+  private async initApolloServer(): Promise<void> {
+    const schema = await buildSchema({
+      resolvers: [this.graphqlResolversPath],
+    });
+
+    this.server = new ApolloServer({
+      schema,
+      plugins: [
+        process.env.NODE_ENV === "production"
+          ? ApolloServerPluginLandingPageProductionDefault
+          : ApolloServerPluginLandingPageGraphQLPlayground,
+      ],
+      context: ({ req, res }) => ({ req, res }),
+    });
+
+    await this.server.start();
+
+    this.server.applyMiddleware({ app: this.app });
   }
 
   private async startServer(): Promise<void> {
