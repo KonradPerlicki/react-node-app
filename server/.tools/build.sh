@@ -21,11 +21,11 @@ echo "${YELLOW}Starting containers for '${BOLD}${DOCKER_PREFIX%$'\r'}'...${RESET
 docker-compose up -d
 
 echo "${BOLD}${RED}--------------------------------------------------------------------------------${RESET}"
-echo "${BOLD}${YELLOW}Installing server dependencies...${RESET}\n"
+echo "${BOLD}${YELLOW}Installing server dependencies...${RESET}"
 docker exec -i "${DOCKER_PREFIX%$'\r'}"_node npm install
 
 echo "${BOLD}${RED}--------------------------------------------------------------------------------${RESET}"
-echo "${BOLD}${YELLOW}Installing front-end dependencies...${RESET}\n"
+echo "${BOLD}${YELLOW}Installing front-end dependencies...${RESET}"
 docker exec -i "${DOCKER_PREFIX%$'\r'}"_react npm install
 
 echo "${BOLD}${RED}--------------------------------------------------------------------------------${RESET}"
@@ -38,5 +38,5 @@ echo -e "${BOLD}${YELLOW}Running all migrations...${RESET}\n"
 docker exec -i "${DOCKER_PREFIX%$'\r'}"_node npm run run-migrations
 
 echo "${BOLD}${RED}--------------------------------------------------------------------------------${RESET}"
-echo "${YELLOW}The panel is available at: ${BOLD}${GREEN}http://localhost:${DOCKER_REACT_PORT%$'\r'}/${RESET}"
+echo "${YELLOW}The app is available at: ${BOLD}${GREEN}http://localhost:${DOCKER_REACT_PORT%$'\r'}/${RESET}"
 echo "${YELLOW}The database panel is available at: ${BOLD}${GREEN}http://localhost:5050/${RESET}"

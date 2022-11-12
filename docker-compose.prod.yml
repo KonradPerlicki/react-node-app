@@ -19,6 +19,8 @@ services:
     container_name: ${DOCKER_PREFIX}_pgadmin4
     depends_on:
       - db
+    links:
+      - db # allows to connect to db in pgadmin with host 'db' instead of IP address
     environment:
       - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL}
       - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
@@ -28,28 +30,31 @@ services:
   web:
     build:
       context: ./server
+      target: production # build from production stage
     container_name: ${DOCKER_PREFIX}_node
     env_file:
       - .env
+    environment:
+      - NODE_ENV=development
     restart: always
     depends_on:
+      - redis
       - db 
     ports: 
       - '${DOCKER_NODE_PORT}:4000' # exposed port : port inside container
     volumes:
-      - /usr/app/server/node_modules # ? make sure we don't delete node_modules because of other volume
       - ./server:/usr/app/server
+
 
   frontend:
     build:
       context: ./front-end
-      dockerfile: Dockerfile
+      target: production
     container_name: ${DOCKER_PREFIX}_react
     stdin_open: true # needed because of react-scripts opens the browser
     ports:
       - "${DOCKER_REACT_PORT}:3000"
     volumes:
-      - /usr/app/front-end/node_modules
       - ./front-end:/usr/app/front-end
 
   redis:
