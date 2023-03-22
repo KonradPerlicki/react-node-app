@@ -33,11 +33,3 @@ cp .env.example .env
 server/.tools/build.sh
 ```
 This command will download and create docker containers, install all dependencies for the front-end and server and import sample of database 
-
-## Project Structure
-The folder structure of this app is explained below:
-
-| Name | Description |
-| ------------------------ | --------------------------------------------------------------------------------------------- |
-| **front-end**                 | Contains all front-end files, developed by [@NadmorskaAlpaka](https://github.com/NadmorskaAlpaka)
-| **server**         | The back-end part of this project is fully developed and maintaned by [@me](https://github.com/KonradPerlicki)|
